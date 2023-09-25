@@ -51,7 +51,7 @@ public class WebSocketClient {
                     while (true) {
                         // 서버 응답 받기
                         String responseMessage = dataIn.readUTF();
-                        log.info("반환 메세지 : {}", responseMessage);
+                        log.info("반환 메세지: {}", responseMessage);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
