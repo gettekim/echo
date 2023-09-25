@@ -1,16 +1,16 @@
 package com.dozn.echo.server;
 
+import com.dozn.echo.utils.CryptoUtils;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import com.dozn.echo.utils.CryptoUtils;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 
 @Slf4j
 @SpringBootApplication
@@ -40,7 +40,7 @@ public class EchoServerApplication {
     private static class ClientHandler implements Runnable {
         private final Socket clientSocket;
         private final CryptoUtils cryptoUtils = new CryptoUtils();
-        private final BlockingQueue<String> queue = new ArrayBlockingQueue<>(10);
+        private final MessageQueue queue = new MessageQueue();
         public ClientHandler(Socket clientSocket) {
             this.clientSocket = clientSocket;
         }
@@ -59,22 +59,14 @@ public class EchoServerApplication {
 
                     // 메시지 복호화
                     String receivedMessage = cryptoUtils.decrypt(encryptedMessage);
-                    String deletedMessage="";
-
-                    // 메시지 큐에 저장
-                    if (queue.size() >= 10) {
-                        deletedMessage = queue.poll(); // 큐가 꽉 찼을 경우 첫 번째 요소 제거
-                    }
-                    queue.offer(receivedMessage);
-                    log.info("받은 메세지 : {}", receivedMessage);
-                    log.info("큐 : {}",queue);
-                    log.info("큐 개수 : {}", queue.size());
+                    log.info("받은 메세지: {}", receivedMessage);
+                    // 큐 작업 실행
+                    String resultMessage = queue.proceed(receivedMessage);
+                    // 큐 상태 확인
+                    queue.getQueueStatus();
 
                     // 클라이언트에 응답
-                    if(deletedMessage != ""){
-                        receivedMessage += " 삭제된 메세지 : "+deletedMessage;
-                    }
-                    dataOut.writeUTF(receivedMessage);
+                    dataOut.writeUTF(resultMessage);
                     dataOut.flush();
                 }
             } catch (Exception e) {
