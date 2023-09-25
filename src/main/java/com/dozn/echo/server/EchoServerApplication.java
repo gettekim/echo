@@ -22,8 +22,8 @@ public class EchoServerApplication {
 
     @PostConstruct
     public void startEchoServer() {
-        try {
-            ServerSocket serverSocket = new ServerSocket(8080);
+        try (ServerSocket serverSocket = new ServerSocket(8080)){
+
             System.out.println("에코서버 대기중...");
 
             while (true) {
@@ -38,20 +38,17 @@ public class EchoServerApplication {
     }
 
     private static class ClientHandler implements Runnable {
-        private Socket clientSocket;
-
+        private final Socket clientSocket;
+        private final CryptoUtils cryptoUtils = new CryptoUtils();
+        private final BlockingQueue<String> queue = new ArrayBlockingQueue<>(10);
         public ClientHandler(Socket clientSocket) {
             this.clientSocket = clientSocket;
         }
-        CryptoUtils cryptoUtils = new CryptoUtils();
 
         @Override
         public void run() {
-            try {
-
-                BlockingQueue<String> queue = new ArrayBlockingQueue<>(10);
-                DataInputStream dataIn = new DataInputStream(clientSocket.getInputStream());
-                DataOutputStream dataOut = new DataOutputStream(clientSocket.getOutputStream());
+            try (DataInputStream dataIn = new DataInputStream(clientSocket.getInputStream());
+                 DataOutputStream dataOut = new DataOutputStream(clientSocket.getOutputStream())){
 
                 while (true) {
 

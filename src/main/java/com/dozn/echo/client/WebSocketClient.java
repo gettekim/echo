@@ -14,13 +14,12 @@ public class WebSocketClient {
 
     public static void main(String[] args) {
 
-        try {
+        try (Socket clientSocket = new Socket(SERVER_HOST, SERVER_PORT);
+             DataInputStream dataIn = new DataInputStream(clientSocket.getInputStream());
+             DataOutputStream dataOut = new DataOutputStream(clientSocket.getOutputStream());
+             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))){
 
-            Socket clientSocket = new Socket(SERVER_HOST, SERVER_PORT);
-            System.out.println("서버에 연결.");
-
-            DataInputStream dataIn = new DataInputStream(clientSocket.getInputStream());
-            DataOutputStream dataOut = new DataOutputStream(clientSocket.getOutputStream());
+            log.info("서버에 연결.");
 
             CryptoUtils cryptoUtils = new CryptoUtils();
 
@@ -28,7 +27,6 @@ public class WebSocketClient {
             Thread responseThread = new Thread(new ResponseReceiver(dataIn));
             responseThread.start();
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             while (true) {
 
                 // 사용자로부터 문자열 입력
@@ -47,7 +45,6 @@ public class WebSocketClient {
     }
 
     private record ResponseReceiver(DataInputStream dataIn) implements Runnable {
-
         @Override
             public void run() {
                 try {
