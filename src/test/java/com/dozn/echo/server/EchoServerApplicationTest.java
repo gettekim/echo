@@ -40,7 +40,7 @@ public class EchoServerApplicationTest {
     }
 
     @Test
-    public void 클라이언트가_보낸메세지_서버에서_일치하는지확인() throws Exception {
+    public void 클라이언트에서_보낸메세지가_반환메세지와_일치하는지확인() throws Exception {
 
         Socket clientSocket = new Socket("localhost", 8080);
         DataOutputStream dataOut = new DataOutputStream(clientSocket.getOutputStream());
@@ -59,7 +59,7 @@ public class EchoServerApplicationTest {
 
         clientSocket.close();
 
-        assertThat(receivedMessage.equals(message));
+        assertThat(receivedMessage).isEqualTo(message);
         log.info("메세지: {}", message);
 
     }
