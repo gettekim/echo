@@ -32,7 +32,7 @@ public class EchoServerApplication {
                 Thread clientThread = new Thread(new ClientHandler(clientSocket));
                 clientThread.start();
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -41,7 +41,7 @@ public class EchoServerApplication {
         private final Socket clientSocket;
         private final CryptoUtils cryptoUtils = new CryptoUtils();
         private final MessageQueue queue = new MessageQueue();
-        public ClientHandler(Socket clientSocket) {
+        public ClientHandler(Socket clientSocket) throws Exception {
             this.clientSocket = clientSocket;
         }
 
