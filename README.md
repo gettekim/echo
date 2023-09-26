@@ -47,7 +47,12 @@ socket echo서버를 통한 암호화 메시지 송/수신 구현방법은 여�
 
 6. 각각의 클라이언트를 실행시켜 문자를 입력한다.
 
-![image](https://github.com/gettekim/echo/assets/51043714/a9cf8612-e73a-4201-9548-d38c752f5cf2)
+![image](https://github.com/gettekim/echo/assets/51043714/f823b5fe-c3c8-45a5-aaec-66d207d94781)
+
+7. Services 탭을 눌러 에코서버에서 내용 확인
+
+![image](https://github.com/gettekim/echo/assets/51043714/5d17a620-7723-4172-bee2-57c6109bc09b)
+
 
 ---
 
