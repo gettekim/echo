@@ -4,10 +4,11 @@ import com.dozn.echo.utils.CryptoUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
+import java.net.ConnectException;
 import java.net.Socket;
 
 @Slf4j
-public class WebSocketClient {
+public class EchoClient {
 
     private static final String SERVER_HOST = "localhost";
     private static final int SERVER_PORT = 8080;
@@ -34,12 +35,15 @@ public class WebSocketClient {
 
                 // 문자열을 바이트 배열로 변환하고 암호화
                 byte[] encryptedData = cryptoUtils.encrypt(messageToSend);
+
                 // 암호문 길이와 암호문 전송
                 dataOut.writeInt(encryptedData.length);
                 dataOut.write(encryptedData);
                 dataOut.flush();
             }
-        } catch (Exception e) {
+        } catch (ConnectException e) {
+            log.info("연결오류");
+        } catch (Exception e){
             e.printStackTrace();
         }
     }
